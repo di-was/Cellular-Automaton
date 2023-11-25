@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void run_engine(void);
+void engine(void);
 
 
 void main(void) {
