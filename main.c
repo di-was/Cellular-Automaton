@@ -21,7 +21,7 @@ short int initialize() {
         SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
-        SDL_WINDOW_RESIZABLE
+        SDL_WINDOW_ALWAYS_ON_TOP
     );
 
     if (!window) {
@@ -56,23 +56,20 @@ void process_input() {
 }
 
 void draw_grid() {
-    int window_width, window_height;
-    SDL_GetWindowSize(window, &window_width, &window_height);
-
-    int total_lines_vertically = window_width / BLOCK_WIDTH;
-    int total_lines_horizontally = window_height / BLOCK_HEIGHT;
+    int total_lines_vertically = WINDOW_WIDTH / BLOCK_WIDTH;
+    int total_lines_horizontally = WINDOW_HEIGHT / BLOCK_HEIGHT;
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     // Render vertical lines
 
     for (int i =1; i <= total_lines_vertically; i++) {
-        SDL_RenderDrawLine(renderer,  BLOCK_WIDTH * i, 0, BLOCK_WIDTH*i, window_height);
+        SDL_RenderDrawLine(renderer,  BLOCK_WIDTH * i, 0, BLOCK_WIDTH*i, WINDOW_HEIGHT);
     }
 
     // Render horizontal lines
 
     for (int i=1; i <= total_lines_horizontally; i++) {
-        SDL_RenderDrawLine(renderer, 0, BLOCK_HEIGHT*i, window_width, BLOCK_HEIGHT*i);
+        SDL_RenderDrawLine(renderer, 0, BLOCK_HEIGHT*i, WINDOW_WIDTH, BLOCK_HEIGHT*i);
     }
     
 }
