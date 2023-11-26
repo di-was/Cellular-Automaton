@@ -55,10 +55,39 @@ void process_input() {
     }
 }
 
+void draw_grid() {
+    int window_width, window_height;
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    int total_lines_vertically = window_width / BLOCK_WIDTH;
+    int total_lines_horizontally = window_height / BLOCK_HEIGHT;
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    // Render vertical lines
+
+    for (int i =1; i <= total_lines_vertically; i++) {
+        SDL_RenderDrawLine(renderer,  BLOCK_WIDTH * i, 0, BLOCK_WIDTH*i, window_height);
+    }
+
+    // Render horizontal lines
+
+    for (int i=1; i <= total_lines_horizontally; i++) {
+        SDL_RenderDrawLine(renderer, 0, BLOCK_HEIGHT*i, window_width, BLOCK_HEIGHT*i);
+    }
+    
+}
+
 void render() {
     SDL_SetRenderDrawColor(renderer, 29, 26, 30, 0.8);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer); // fills the screen with the last set color
+     
+    //------------ OBJECTS RENDERING BLOCK------------
+
+    draw_grid();
+
+    //---------END OF OBJECTS RENDERING BLOCK---------
+
+    SDL_RenderPresent(renderer); // switches the buffer frame
 }
 
 void destroy_window() {
