@@ -4,4 +4,3 @@
 #define WINDOW_HEIGHT 800
 #define BLOCK_WIDTH 25
 #define BLOCK_HEIGHT 25
-
