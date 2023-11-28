@@ -39,9 +39,9 @@ int fate_decider(int fate_point, int current_status) {
 void main(void) {
     int total_box = 25;
     int matrix[] = {0, 0, 0, 0, 0,
-                    0, 0, 1, 0, 0,
-                    0, 0, 1, 0, 0,
-                    0, 0, 1, 0, 0,
+                    0, 0, 0, 0, 0,
+                    0, 1, 1, 1, 0,
+                    0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0
                     };
 
@@ -60,10 +60,10 @@ void main(void) {
         int bottim_neighbor_index = (i-1) + horizontal_box;
 
         fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index - 1] + matrix[top_neighbor_index + 1];
-        fate_point += matrix[bottim_neighbor_index] + matrix[bottim_neighbor_index - 1] + matrix[bottim_neighbor_index];
+        fate_point += matrix[bottim_neighbor_index] + matrix[bottim_neighbor_index - 1] + matrix[bottim_neighbor_index + 1];
         fate_point += matrix[i -2] + matrix[i];
-
-
+        
+        
         buffer[i-1] = fate_decider(fate_point, matrix[i-1]);
     } 
 
@@ -72,5 +72,3 @@ void main(void) {
 
     }
     
-
- 
