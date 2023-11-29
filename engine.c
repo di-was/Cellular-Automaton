@@ -83,11 +83,15 @@ void main(void) {
             }
             else if ( index > 0 && index < horizontal_box - 1) {
                 // top middle
-
+                fate_point += matrix[index - 1] + matrix[index + 1]; // left right
+                fate_point += matrix[bottim_neighbor_index] + matrix[bottim_neighbor_index + 1] + matrix[bottim_neighbor_index - 1]; // bottom left right
+                fate_point +=  matrix[total_box - horizontal_box + index] + matrix[total_box - horizontal_box + index +1] + matrix[total_box - horizontal_box + index -1]; // top left right 
             }
             else if (index < 24 && index > 20) {
                 // bottom middle
-               
+                fate_point += matrix[index - 1] + matrix[index + 1]; // left right
+                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index - 1] + matrix[top_neighbor_index + 1]; // top left right
+                fate_point += matrix[index - (total_box - horizontal_box)] + matrix[index - (total_box - horizontal_box) + 1] + matrix[index - (total_box - horizontal_box) -1]; // bottom left right
             } 
             else if (index % horizontal_box == 0) {
                 // left vertical
