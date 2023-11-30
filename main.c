@@ -30,7 +30,7 @@ short int initialize() {
         SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH,
         WINDOW_HEIGHT,
-        SDL_WINDOW_ALWAYS_ON_TOP
+        SDL_WINDOW_RESIZABLE
     );
 
     if (!window) {
@@ -84,12 +84,35 @@ void draw_grid() {
 
 }
 
+void draw_rectangles() {
+    SDL_Rect tempbox;
+    int y = 0;
+    for (int i=0; i < grid.total_box; i++) {
+        tempbox.x = (i % grid.horizontal_box) * BLOCK_WIDTH ; 
+        tempbox.y = BLOCK_HEIGHT * y ;
+        tempbox.w = BLOCK_WIDTH;
+        tempbox.h = BLOCK_HEIGHT;
+        if (i % grid.horizontal_box == 0 && i != 0) {
+            y += 1;
+        }
+        if (grid.matrix[i] == 1) {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        } else {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        }
+        SDL_RenderDrawRect(renderer, &tempbox);
+        SDL_RenderFillRect(renderer, &tempbox);
+    }
+}
+
 void render() {
     SDL_SetRenderDrawColor(renderer, 29, 26, 30, 0.8);
     SDL_RenderClear(renderer); // fills the screen with the last set color
      
     //------------ OBJECTS RENDERING BLOCK------------
 
+    
+    draw_rectangles();
     draw_grid();
 
     //---------END OF OBJECTS RENDERING BLOCK---------
@@ -98,9 +121,6 @@ void render() {
 }
 
 void destroy_window() {
-    // free grid memory;
-    free(grid.matrix);
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -120,13 +140,13 @@ void initialize_grid(int screen_width, int screen_height, int block_width, int b
 int main(void) {
     in_game = initialize();
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
-
     while (in_game) {
         int * buffer = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
+        grid.matrix = buffer;
         process_input();
         render();
-        grid.matrix = buffer;
         free(buffer);
+        break;
     }
     destroy_window();
     return 0;    

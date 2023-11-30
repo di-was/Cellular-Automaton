@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 
 void print_array(int array[], int length) {
     for (int i=0; i<length; i++) {
@@ -29,7 +29,7 @@ int fate_decider(int fate_point, int current_status) {
 
 
 int * engine(int matrix[], int total_box, int horizontal_box, int vertical_box) {
-    int buffer[] = calloc(total_box, sizeof(int));
+    int * buffer = calloc(total_box, sizeof(int));
 
     for (int i=1; i <= total_box; i++) {
         int fate_point = 0;
