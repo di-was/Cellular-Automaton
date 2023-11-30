@@ -28,18 +28,8 @@ int fate_decider(int fate_point, int current_status) {
 }
 
 
-void main(void) {
-    int total_box = 25;
-    int matrix[] = {0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0
-                    };
-
-    int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    int horizontal_box = 5;
-    int vertical_box = 5;
+int * engine(int matrix[], int total_box, int horizontal_box, int vertical_box) {
+    int buffer[] = calloc(total_box, sizeof(int));
 
     for (int i=1; i <= total_box; i++) {
         int fate_point = 0;
@@ -105,5 +95,5 @@ void main(void) {
             buffer[i-1] = fate_decider(fate_point, matrix[i-1]);
         }
     } 
-    print_array(buffer, total_box);
+    return buffer;
     }

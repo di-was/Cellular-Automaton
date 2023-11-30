@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include "engine.c"
 #include "constants.h"
 
 //------- GLOBAL VARIABLES----------
@@ -115,13 +116,17 @@ void initialize_grid(int screen_width, int screen_height, int block_width, int b
 }
 
 
+
 int main(void) {
     in_game = initialize();
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
 
     while (in_game) {
+        int * buffer = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
         process_input();
         render();
+        grid.matrix = buffer;
+        free(buffer);
     }
     destroy_window();
     return 0;    
