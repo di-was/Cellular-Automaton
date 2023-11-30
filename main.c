@@ -7,6 +7,14 @@ SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
 short int in_game = FALSE;
 
+//  DATA OBJECT OF GAME
+struct GRID {
+    int * matrix;
+    int horizontal_box;
+    int vertical_box;
+    int total_box;
+} grid;
+
 // Initialize SDL, boot window and renderer 
 short int initialize() {
 
@@ -71,7 +79,8 @@ void draw_grid() {
     for (int i=1; i <= total_lines_horizontally; i++) {
         SDL_RenderDrawLine(renderer, 0, BLOCK_HEIGHT*i, WINDOW_WIDTH, BLOCK_HEIGHT*i);
     }
-    
+
+
 }
 
 void render() {
@@ -88,13 +97,27 @@ void render() {
 }
 
 void destroy_window() {
+    // free grid memory;
+    free(grid.matrix);
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
+
+
+void initialize_grid(int screen_width, int screen_height, int block_width, int block_height) {
+    grid.horizontal_box = (screen_width / block_width);
+    grid.vertical_box = (screen_height / block_height);
+    grid.total_box = grid.horizontal_box * grid.vertical_box;
+    grid.matrix = calloc(grid.total_box, sizeof(int));
+}
+
+
 int main(void) {
     in_game = initialize();
+    initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
 
     while (in_game) {
         process_input();

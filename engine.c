@@ -27,22 +27,14 @@ int fate_decider(int fate_point, int current_status) {
     return 0;
 }
 
-/*
-    1 1 1 0 0
-    1 0 0 0 0
-    0 0 0 0 0
-    0 0 0 0 0
-    0 0 0 0 0
-
-*/
 
 void main(void) {
     int total_box = 25;
-    int matrix[] = {1, 0, 0, 0, 0,
+    int matrix[] = {0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0,
                     0, 0, 0, 0, 0,
-                    1, 0, 0, 0, 0,
-                    1, 0, 0, 0, 0
+                    0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0
                     };
 
     int buffer[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -57,11 +49,10 @@ void main(void) {
         if (is_special(total_box, horizontal_box, vertical_box, i)) {
             int index = i - 1;
             if (index - 1 < 0) {
-               
                 // top left box
                 fate_point += matrix[index + 1] + matrix[index + (horizontal_box - 1)]; // left right
                 fate_point += matrix[bottim_neighbor_index] + matrix[bottim_neighbor_index + 1] + matrix[index + (2*horizontal_box) - 1]; // bottom left right
-                fate_point += matrix[total_box - horizontal_box] + matrix[total_box - horizontal_box + 1] + matrix[total_box]; // top left right
+                fate_point += matrix[total_box - horizontal_box] + matrix[total_box - horizontal_box + 1] + matrix[total_box - 1]; // top left right
             }
             else if (i - horizontal_box == 0) {
                 // top right box
@@ -116,4 +107,3 @@ void main(void) {
     } 
     print_array(buffer, total_box);
     }
-    
