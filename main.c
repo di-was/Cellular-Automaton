@@ -86,23 +86,21 @@ void draw_grid() {
 
 void draw_rectangles() {
     SDL_Rect tempbox;
-    int y = 0;
-    for (int i=0; i < grid.total_box; i++) {
-        tempbox.x = (i % grid.horizontal_box) * BLOCK_WIDTH ; 
-        tempbox.y = BLOCK_HEIGHT * y ;
-        tempbox.w = BLOCK_WIDTH;
-        tempbox.h = BLOCK_HEIGHT;
-        if (i % grid.horizontal_box == 0 && i != 0) {
-            y += 1;
-        }
+    int x=0, y =0;
+    for (int i=0; i<grid.total_box; i++) {
         if (grid.matrix[i] == 1) {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        } else {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+            x = i % grid.horizontal_box;
+            y = i / grid.horizontal_box;
+            tempbox.x = BLOCK_WIDTH*x;
+            tempbox.y = BLOCK_HEIGHT*y;
+            tempbox.w = BLOCK_WIDTH;
+            tempbox.h = BLOCK_HEIGHT;
+            SDL_SetRenderDrawColor(renderer, 47, 150, 155, 100);
+            SDL_RenderFillRect(renderer, &tempbox);
         }
-        SDL_RenderDrawRect(renderer, &tempbox);
-        SDL_RenderFillRect(renderer, &tempbox);
     }
+
+ 
 }
 
 void render() {
@@ -140,13 +138,13 @@ void initialize_grid(int screen_width, int screen_height, int block_width, int b
 int main(void) {
     in_game = initialize();
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+    grid.matrix[1] = 1;
+    grid.matrix[2] = 1;
+    grid.matrix[3] = 1; 
     while (in_game) {
-        int * buffer = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
-        grid.matrix = buffer;
+        grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
         process_input();
         render();
-        free(buffer);
-        break;
     }
     destroy_window();
     return 0;    
