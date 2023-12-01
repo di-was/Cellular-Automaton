@@ -50,55 +50,34 @@ int * engine(int matrix[], int total_box, int horizontal_box, int vertical_box) 
             int index = i - 1;
             if (index - 1 < 0) {
                 fate_point = fate_point_calculator(matrix, total_box - horizontal_box -1, total_box - horizontal_box, total_box - horizontal_box + 1, index + (horizontal_box-1), index + 1, index + (2*bottom_neighbor_index) - 1, bottom_neighbor_index, bottom_neighbor_index + 1);
-                //fate_point += matrix[index + 1] + matrix[index + (horizontal_box - 1)]; // left right
-                //fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index + 1] + matrix[index + (2*horizontal_box) - 1]; // bottom left right
-                //fate_point += matrix[total_box - horizontal_box] + matrix[total_box - horizontal_box + 1] + matrix[total_box - 1]; // top left right
             }
             else if (i - horizontal_box == 0) {
                 // top right box
                 fate_point = fate_point_calculator(matrix, total_box-2, total_box - 1, total_box - horizontal_box, index  -1 , 0, bottom_neighbor_index -1, bottom_neighbor_index, 0 + horizontal_box);
-                //fate_point += matrix[index - 1] + matrix[0]; // left right
-                //fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index - 1] + matrix[0 + horizontal_box]; // bottom left right
-                //fate_point += matrix[total_box - 1] + matrix[total_box - 2] + matrix[total_box - horizontal_box]; // top left right
             }
             else if (index == total_box - horizontal_box) {
                 // bottom left box
-                
-                //fate_point += matrix[index] + matrix[total_box - 1]; // left right
-                //fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index + 1] + matrix[i - 1]; // top left right
-                //fate_point += matrix[0] + matrix[1] + matrix[horizontal_box - 1]; // bottom left right;
+                fate_point = fate_point_calculator(matrix, i - 1, top_neighbor_index, top_neighbor_index + 1, total_box - 1, index, horizontal_box - 1, 0, 1);
             }
             else if (i == total_box) {
                 // bottom right box
-                fate_point += matrix[index - 1] + matrix[total_box - horizontal_box]; // left right
-                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index - 1] + matrix[top_neighbor_index - horizontal_box -1];
-                fate_point += matrix[0] + matrix[horizontal_box - 1] + matrix[horizontal_box - 2];
+                fate_point = fate_point_calculator(matrix, top_neighbor_index - 1, top_neighbor_index, top_neighbor_index - horizontal_box -1, index -1, total_box - horizontal_box, horizontal_box -2, horizontal_box-1, 0);
             }
             else if ( index > 0 && index < horizontal_box - 1) {
                 // top middle
-                fate_point += matrix[index - 1] + matrix[index + 1]; // left right
-
-                fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index + 1] + matrix[bottom_neighbor_index - 1]; // bottom left right
-                fate_point +=  matrix[total_box - horizontal_box + index] + matrix[total_box - horizontal_box + index +1] + matrix[total_box - horizontal_box + index -1]; // top left right 
+                fate_point = fate_point_calculator(matrix, total_box - horizontal_box + index, total_box - horizontal_box + index + 1, total_box - horizontal_box + index - 1, index - 1, index + 1, bottom_neighbor_index - 1, bottom_neighbor_index, bottom_neighbor_index + 1); 
             }
             else if (index < total_box && index > total_box - horizontal_box) {
                 // bottom middle
-                fate_point += matrix[index - 1] + matrix[index + 1]; // left right
-                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index - 1] + matrix[top_neighbor_index + 1]; // top left right
-                fate_point += matrix[index - (total_box - horizontal_box)] + matrix[index - (total_box - horizontal_box) + 1] + matrix[index - (total_box - horizontal_box) -1]; // bottom left right
-                
+                fate_point = fate_point_calculator(matrix, top_neighbor_index - 1, top_neighbor_index, top_neighbor_index + 1, index - 1, index + 1, index - (total_box - horizontal_box), index - (total_box - horizontal_box ) + 1, index - (total_box - horizontal_box) - 1);
             } 
             else if (index % horizontal_box == 0) {
                 // left vertical
-                fate_point += matrix[index + 1] + matrix[index + (horizontal_box - 1)]; // left right
-                fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index + 1] + matrix[bottom_neighbor_index + (horizontal_box-1)]; // bottom left right
-                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index + 1] + matrix[top_neighbor_index + (horizontal_box - 1)]; // top left right
+                fate_point = fate_point_calculator(matrix, top_neighbor_index + (horizontal_box - 1), top_neighbor_index , top_neighbor_index + 1, index + 1, index + (horizontal_box - 1), bottom_neighbor_index + (horizontal_box - 1), bottom_neighbor_index, bottom_neighbor_index + 1);
             }
             else{
                 // right vertical
-                fate_point += matrix[index - 1] + matrix[index  - (horizontal_box - 1)]; // left right
-                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index - 1] + matrix[top_neighbor_index - (horizontal_box - 1)]; // top left right
-                fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index - 1] + matrix[bottom_neighbor_index - (horizontal_box - 1)];
+                fate_point = fate_point_calculator(matrix, top_neighbor_index - 1, top_neighbor_index, top_neighbor_index - (horizontal_box - 1), index - 1, index - (horizontal_box - 1), bottom_neighbor_index - 1, bottom_neighbor_index, bottom_neighbor_index - (horizontal_box - 1));
             }
             buffer[i-1] = fate_decider(fate_point, matrix[i-1]);
         }
