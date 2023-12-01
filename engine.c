@@ -30,7 +30,12 @@ int fate_decider(int fate_point, int current_status) {
     return 0;
 }
 
-int fate_point_calculator(int top_left, int top, int top_right, int left , int right, int bottom_left, int bottom, int bottom_right);
+int fate_point_calculator(int matrix[], int top_left, int top, int top_right, int left , int right, int bottom_left, int bottom, int bottom_right) {
+    int result = matrix[top_left] + matrix[top] +  matrix[top_right];
+    result += matrix[left] + matrix[right];
+    result += matrix[bottom_left] + matrix[bottom] + matrix[bottom_right];
+    return result;
+}
 
 
 int * engine(int matrix[], int total_box, int horizontal_box, int vertical_box) {
@@ -44,22 +49,24 @@ int * engine(int matrix[], int total_box, int horizontal_box, int vertical_box) 
         if (is_special(total_box, horizontal_box, vertical_box, i)) {
             int index = i - 1;
             if (index - 1 < 0) {
-                // top left box
-                fate_point += matrix[index + 1] + matrix[index + (horizontal_box - 1)]; // left right
-                fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index + 1] + matrix[index + (2*horizontal_box) - 1]; // bottom left right
-                fate_point += matrix[total_box - horizontal_box] + matrix[total_box - horizontal_box + 1] + matrix[total_box - 1]; // top left right
+                fate_point = fate_point_calculator(matrix, total_box - horizontal_box -1, total_box - horizontal_box, total_box - horizontal_box + 1, index + (horizontal_box-1), index + 1, index + (2*bottom_neighbor_index) - 1, bottom_neighbor_index, bottom_neighbor_index + 1);
+                //fate_point += matrix[index + 1] + matrix[index + (horizontal_box - 1)]; // left right
+                //fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index + 1] + matrix[index + (2*horizontal_box) - 1]; // bottom left right
+                //fate_point += matrix[total_box - horizontal_box] + matrix[total_box - horizontal_box + 1] + matrix[total_box - 1]; // top left right
             }
             else if (i - horizontal_box == 0) {
                 // top right box
-                fate_point += matrix[index - 1] + matrix[0]; // left right
-                fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index - 1] + matrix[0 + horizontal_box]; // bottom left right
-                fate_point += matrix[total_box - 1] + matrix[total_box - 2] + matrix[total_box - horizontal_box]; // top left right
+                fate_point = fate_point_calculator(matrix, total_box-2, total_box - 1, total_box - horizontal_box, index  -1 , 0, bottom_neighbor_index -1, bottom_neighbor_index, 0 + horizontal_box);
+                //fate_point += matrix[index - 1] + matrix[0]; // left right
+                //fate_point += matrix[bottom_neighbor_index] + matrix[bottom_neighbor_index - 1] + matrix[0 + horizontal_box]; // bottom left right
+                //fate_point += matrix[total_box - 1] + matrix[total_box - 2] + matrix[total_box - horizontal_box]; // top left right
             }
             else if (index == total_box - horizontal_box) {
                 // bottom left box
-                fate_point += matrix[index] + matrix[total_box - 1]; // left right
-                fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index + 1] + matrix[i - 1]; // top left right
-                fate_point += matrix[0] + matrix[1] + matrix[horizontal_box - 1]; // bottom left right;
+                
+                //fate_point += matrix[index] + matrix[total_box - 1]; // left right
+                //fate_point += matrix[top_neighbor_index] + matrix[top_neighbor_index + 1] + matrix[i - 1]; // top left right
+                //fate_point += matrix[0] + matrix[1] + matrix[horizontal_box - 1]; // bottom left right;
             }
             else if (i == total_box) {
                 // bottom right box
