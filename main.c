@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "engine.c"
 #include "constants.h"
@@ -6,7 +7,10 @@
 //------- GLOBAL VARIABLES----------
 SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
-short int in_game = FALSE;
+TTF_Font * font = NULL;
+int in_game = FALSE;
+int status = PAUSED;
+
 
 //  DATA OBJECT OF GAME
 struct GRID {
@@ -14,6 +18,8 @@ struct GRID {
     int horizontal_box;
     int vertical_box;
     int total_box;
+    char details[20];
+    int rgba[3] = {255, 255, 255, 255};
 } grid;
 
 // Initialize SDL, boot window and renderer 
@@ -60,7 +66,20 @@ void process_input() {
             if (event.key.keysym.sym == SDLK_ESCAPE) {
                 in_game = FALSE;
             }
+            if (event.key.keysym.sym == SDLK_p) {
+                status = PAUSED;
+            }
+            if (event.key.keysym.sym == SDLK_r) {
+                status = RUNNING;
+            }
             break;
+        case SDL_MOUSEBUTTONDOWN:
+            if (status == PAUSED) {
+                int index = (event.button.x / BLOCK_WIDTH) + (event.button.y / BLOCK_HEIGHT)*grid.horizontal_box;
+                if (grid.matrix[index] == 1) {
+                    grid.matrix[index] = 0;
+                } else {grid.matrix[index] = 1;}
+            }
     }
 }
 
@@ -133,18 +152,34 @@ void initialize_grid(int screen_width, int screen_height, int block_width, int b
     grid.matrix = calloc(grid.total_box, sizeof(int));
 }
 
+void intialize_font() {
+    if (TTF_Init() != 0) {
+        fprintf(stderr,"Errpr initializing SDL_ttf \n");
+        destroy_window();
+    } 
 
+    font = TTF_OpenFont("", 24);
+    if (!font) {
+        fprintf(stderr, "Error loading font %s \n", TTF_GetError());
+        destroy_window();
+    }
+}
+
+void display_details() {
+    SDL_Surface * text_surface = TTF_RenderText_Solid(font, grid.details);
+    SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+ }
 
 int main(void) {
     in_game = initialize();
+    intialize_font();
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
-    grid.matrix[1] = 1;
-    grid.matrix[2] = 1;
-    grid.matrix[3] = 1; 
+
     while (in_game) {
-        grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
+        if (status == RUNNING)  grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
         process_input();
         render();
+        display_details();
     }
     destroy_window();
     return 0;    
