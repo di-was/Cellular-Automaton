@@ -6,7 +6,6 @@
 //------- GLOBAL VARIABLES----------
 SDL_Window * window = NULL;
 SDL_Renderer * renderer = NULL;
-TTF_Font * font = NULL;
 int in_game = FALSE;
 int status = PAUSED;
 int last_frame_time = 0;
