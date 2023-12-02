@@ -19,7 +19,7 @@ struct GRID {
     int vertical_box;
     int total_box;
     char details[20];
-    int rgba[3] = {255, 255, 255, 255};
+    int rgba[3];
 } grid;
 
 // Initialize SDL, boot window and renderer 
@@ -122,20 +122,7 @@ void draw_rectangles() {
  
 }
 
-void render() {
-    SDL_SetRenderDrawColor(renderer, 29, 26, 30, 0.8);
-    SDL_RenderClear(renderer); // fills the screen with the last set color
-     
-    //------------ OBJECTS RENDERING BLOCK------------
 
-    
-    draw_rectangles();
-    draw_grid();
-
-    //---------END OF OBJECTS RENDERING BLOCK---------
-
-    SDL_RenderPresent(renderer); // switches the buffer frame
-}
 
 void destroy_window() {
     SDL_DestroyRenderer(renderer);
@@ -158,17 +145,43 @@ void intialize_font() {
         destroy_window();
     } 
 
-    font = TTF_OpenFont("", 24);
+    font = TTF_OpenFont("./TYPEWR__.TTF", 28);
     if (!font) {
         fprintf(stderr, "Error loading font %s \n", TTF_GetError());
         destroy_window();
     }
+    grid.rgba[0] = 255;
+    grid.rgba[1] = 255;
+    grid.rgba[2] = 255;
+    grid.rgba[3] = 255;
 }
 
 void display_details() {
-    SDL_Surface * text_surface = TTF_RenderText_Solid(font, grid.details);
+    SDL_Surface * text_surface = TTF_RenderText_Solid(font, "It works !!", (SDL_Color){grid.rgba[0], grid.rgba[1], grid.rgba[2], grid.rgba[3]});
     SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    int text_width , text_height;
+    SDL_QueryTexture(text_texture, NULL, NULL, &text_width, &text_height);
+    int x = (WINDOW_WIDTH - text_width) / 2;
+    int y = (WINDOW_HEIGHT - text_height) / 2;
+
+    SDL_Rect text_rect = {x, y, text_width, text_height};
+    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
  }
+
+ void render() {
+    SDL_SetRenderDrawColor(renderer, 29, 26, 30, 0.8);
+    SDL_RenderClear(renderer); // fills the screen with the last set color
+     
+    //------------ OBJECTS RENDERING BLOCK------------
+
+    
+    draw_rectangles();
+    draw_grid();    
+    display_details();
+    //---------END OF OBJECTS RENDERING BLOCK---------
+
+    SDL_RenderPresent(renderer); // switches the buffer frame
+}
 
 int main(void) {
     in_game = initialize();
@@ -179,7 +192,6 @@ int main(void) {
         if (status == RUNNING)  grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
         process_input();
         render();
-        display_details();
     }
     destroy_window();
     return 0;    
