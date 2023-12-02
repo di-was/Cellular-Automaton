@@ -13,13 +13,13 @@ int status = PAUSED;
 int last_frame_time = 0;
 
 
+
 //  DATA OBJECT OF GAME
 struct GRID {
     int * matrix;
     int horizontal_box;
     int vertical_box;
     int total_box;
-    char details[100];
 } grid;
 
 // Initialize SDL, boot window and renderer 
@@ -121,8 +121,6 @@ void draw_rectangles() {
             alive += 1;
         } else dead += 1;
     }
-    if (status == RUNNING) sprintf(grid.details, "Alive : %d   Dead : %d   Total : %d   Status : Running ", alive, dead, grid.total_box);
-    if (status == PAUSED) sprintf(grid.details, "Alive : %d  Dead : %d  Total : %d  Status : PAUSED", alive, dead, grid.total_box);
 }
 
 
@@ -156,17 +154,6 @@ void intialize_font() {
 
 }
 
-void display_details() {
-    SDL_Surface * text_surface = TTF_RenderText_Solid(font, grid.details, (SDL_Color){TEXT_COLOR_RGBA});
-    SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    int text_width , text_height;
-    SDL_QueryTexture(text_texture, NULL, NULL, &text_width, &text_height);
-    int x = (WINDOW_WIDTH - text_width*1.2)  ;
-    int y = ((WINDOW_HEIGHT+text_height*1.2) - WINDOW_HEIGHT) ;
-
-    SDL_Rect text_rect = {x, y, text_width, text_height};
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
- }
 
  void render() {
     SDL_SetRenderDrawColor(renderer, 29, 26, 30, 0.8);
@@ -176,7 +163,6 @@ void display_details() {
 
     draw_rectangles();
     draw_grid();    
-    display_details();
     //---------END OF OBJECTS RENDERING BLOCK---------
 
     SDL_RenderPresent(renderer); // switches the buffer frame
@@ -187,18 +173,20 @@ void manage_fps(int frame_target_time) {
     if (time_to_wait > 0 && time_to_wait <= frame_target_time) {
         SDL_Delay(time_to_wait);
     }
-
     last_frame_time = SDL_GetTicks();
-
 }
 
 int main(void) {
     in_game = initialize();
     intialize_font();
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+    int delta_time = SDL_GetTicks();
 
     while (in_game) {
-        if (status == RUNNING)  grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
+        if (status == RUNNING && (SDL_GetTicks() - delta_time > 1000)) {
+              grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
+              delta_time = SDL_GetTicks();
+        }
         process_input();
         render();
         manage_fps(status == TRUE ? RUNNING_FRAME_TARGET_TIME : PAUSED_FRAME_TARGET_TIME);
