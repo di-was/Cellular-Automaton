@@ -10,6 +10,7 @@ SDL_Renderer * renderer = NULL;
 TTF_Font * font = NULL;
 int in_game = FALSE;
 int status = PAUSED;
+int last_frame_time = 0;
 
 
 //  DATA OBJECT OF GAME
@@ -18,8 +19,7 @@ struct GRID {
     int horizontal_box;
     int vertical_box;
     int total_box;
-    char details[20];
-    int rgba[3];
+    char details[100];
 } grid;
 
 // Initialize SDL, boot window and renderer 
@@ -105,6 +105,8 @@ void draw_grid() {
 
 void draw_rectangles() {
     SDL_Rect tempbox;
+    int alive = 0;
+    int dead = 0;
     int x=0, y =0;
     for (int i=0; i<grid.total_box; i++) {
         if (grid.matrix[i] == 1) {
@@ -116,10 +118,11 @@ void draw_rectangles() {
             tempbox.h = BLOCK_HEIGHT;
             SDL_SetRenderDrawColor(renderer, 47, 150, 155, 100);
             SDL_RenderFillRect(renderer, &tempbox);
-        }
+            alive += 1;
+        } else dead += 1;
     }
-
- 
+    if (status == RUNNING) sprintf(grid.details, "Alive : %d   Dead : %d   Total : %d   Status : Running ", alive, dead, grid.total_box);
+    if (status == PAUSED) sprintf(grid.details, "Alive : %d  Dead : %d  Total : %d  Status : PAUSED", alive, dead, grid.total_box);
 }
 
 
@@ -145,24 +148,21 @@ void intialize_font() {
         destroy_window();
     } 
 
-    font = TTF_OpenFont("./TYPEWR__.TTF", 28);
+    font = TTF_OpenFont(FONT, FONT_SIZE);
     if (!font) {
         fprintf(stderr, "Error loading font %s \n", TTF_GetError());
         destroy_window();
     }
-    grid.rgba[0] = 255;
-    grid.rgba[1] = 255;
-    grid.rgba[2] = 255;
-    grid.rgba[3] = 255;
+
 }
 
 void display_details() {
-    SDL_Surface * text_surface = TTF_RenderText_Solid(font, "It works !!", (SDL_Color){grid.rgba[0], grid.rgba[1], grid.rgba[2], grid.rgba[3]});
+    SDL_Surface * text_surface = TTF_RenderText_Solid(font, grid.details, (SDL_Color){TEXT_COLOR_RGBA});
     SDL_Texture * text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
     int text_width , text_height;
     SDL_QueryTexture(text_texture, NULL, NULL, &text_width, &text_height);
-    int x = (WINDOW_WIDTH - text_width) / 2;
-    int y = (WINDOW_HEIGHT - text_height) / 2;
+    int x = (WINDOW_WIDTH - text_width*1.2)  ;
+    int y = ((WINDOW_HEIGHT+text_height*1.2) - WINDOW_HEIGHT) ;
 
     SDL_Rect text_rect = {x, y, text_width, text_height};
     SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
@@ -174,13 +174,22 @@ void display_details() {
      
     //------------ OBJECTS RENDERING BLOCK------------
 
-    
     draw_rectangles();
     draw_grid();    
     display_details();
     //---------END OF OBJECTS RENDERING BLOCK---------
 
     SDL_RenderPresent(renderer); // switches the buffer frame
+}
+
+void manage_fps(int frame_target_time) {
+    int time_to_wait = frame_target_time - (SDL_GetTicks() - last_frame_time);
+    if (time_to_wait > 0 && time_to_wait <= frame_target_time) {
+        SDL_Delay(time_to_wait);
+    }
+
+    last_frame_time = SDL_GetTicks();
+
 }
 
 int main(void) {
@@ -192,6 +201,7 @@ int main(void) {
         if (status == RUNNING)  grid.matrix = engine(grid.matrix, grid.total_box, grid.horizontal_box, grid.vertical_box);
         process_input();
         render();
+        manage_fps(status == TRUE ? RUNNING_FRAME_TARGET_TIME : PAUSED_FRAME_TARGET_TIME);
     }
     destroy_window();
     return 0;    
