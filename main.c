@@ -1,5 +1,4 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include "engine.c"
 #include "constants.h"
@@ -38,7 +37,9 @@ short int initialize() {
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE
     );
-
+    int x, y;
+    SDL_GetWindowPosition(window, &x, &y);
+    printf("%d %d", x, y);
     if (!window) {
         fprintf(stderr, "Error creating Window");
         return FALSE;

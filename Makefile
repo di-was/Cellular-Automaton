@@ -1,7 +1,7 @@
 C = gcc
 CFLAGS = -Wall
 build:
-	$(C) $(CFLAGS) main.c -o main -lSDL2 -lSDL2_ttf
+	$(C) $(CFLAGS) main.c -o main -lSDL2
 
 run:
 	./main
