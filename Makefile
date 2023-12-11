@@ -7,4 +7,4 @@ run:
 	./main
 
 clean:
-	rm main
+	rm -rf *
