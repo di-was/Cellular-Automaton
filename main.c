@@ -165,7 +165,7 @@ void manage_fps(int frame_target_time) {
 
 int main(void) {
     in_game = initialize();
-    intialize_font();
+
     initialize_grid(WINDOW_WIDTH, WINDOW_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
     int delta_time = SDL_GetTicks();
 
