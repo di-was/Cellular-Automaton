@@ -140,19 +140,6 @@ void initialize_grid(int screen_width, int screen_height, int block_width, int b
     grid.matrix = calloc(grid.total_box, sizeof(int));
 }
 
-void intialize_font() {
-    if (TTF_Init() != 0) {
-        fprintf(stderr,"Errpr initializing SDL_ttf \n");
-        destroy_window();
-    } 
-
-    font = TTF_OpenFont(FONT, FONT_SIZE);
-    if (!font) {
-        fprintf(stderr, "Error loading font %s \n", TTF_GetError());
-        destroy_window();
-    }
-
-}
 
 
  void render() {
